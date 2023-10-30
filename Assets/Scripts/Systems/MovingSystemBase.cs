@@ -14,19 +14,10 @@ namespace ECSProgramming
     {
         protected override void OnUpdate()
         {
-            foreach (LocalTransform aspect in SystemAPI.Query<LocalTransform>())
+            Entities.ForEach ((ref LocalTransform aspect, in Speed speed) =>
             {
-                //! This will run on main thread
-                //! Foreach loop can do nested cycle
-                var localTransform = aspect;
-                localTransform.Position += new float3(SystemAPI.Time.DeltaTime, 0, 0);
-            }
-            
-            //! This function is similar
-            // Entities.ForEach ((LocalTransform aspect) =>
-            // {
-            //     aspect.Position += new float3(SystemAPI.Time.DeltaTime, 0, 0);
-            // }).Run();
+                aspect.Position += new float3(SystemAPI.Time.DeltaTime * speed.speedValue, 0, 0);
+            }).Run();
                 
             //! If we use Schedule. It will run on main thread
             //! If we use ScheduleParallel, it will run on multiple thread
