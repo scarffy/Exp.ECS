@@ -22,7 +22,7 @@ namespace ECSProgramming
         private readonly RefRO<Speed> speed;
         private readonly RefRW<TargetPosition> targetPosition;
 
-        public void Move(float deltaTimem, Random random)
+        public void Move(float deltaTime, Random random)
         {
             float3 direction = math.normalize(targetPosition.ValueRW.targetPosition - transformAspect.ValueRO.Position);
             transformAspect.ValueRW.Position += direction * speed.ValueRO.speedValue * deltaTime;

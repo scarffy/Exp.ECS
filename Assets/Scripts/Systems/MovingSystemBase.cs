@@ -30,15 +30,28 @@ namespace ECSProgramming
 
           
             //! This also does work but it will not work with ISystemBase
-            foreach (var(speed, transform, target) in SystemAPI.Query<RefRO<Speed>,RefRW<LocalTransform>, RefRW<TargetPosition>>())
+            // foreach (var(speed, transform, target) in SystemAPI.Query<RefRO<Speed>,RefRW<LocalTransform>, RefRW<TargetPosition>>())
+            // {
+            //     transform.ValueRW = transform.ValueRO.Translate(GetRandomPosition() * speed.ValueRO.speedValue * SystemAPI.Time.DeltaTime);
+            //     
+            //     float reachedTargetDistance = .5f;
+            //     if (math.distance(transform.ValueRO.Position, target.ValueRW.targetPosition) < reachedTargetDistance)
+            //     {
+            //         target.ValueRW.targetPosition = GetRandomPosition();
+            //     }
+            // }
+            
+            //! This also does work but it will not work with ISystemBase
+            foreach (MoveToPositionAspect moveToPositionAspect in SystemAPI.Query<MoveToPositionAspect>())
             {
-                transform.ValueRW = transform.ValueRO.Translate(GetRandomPosition() * speed.ValueRO.speedValue * SystemAPI.Time.DeltaTime);
+                // transform.ValueRW = transform.ValueRO.Translate(GetRandomPosition() * speed.ValueRO.speedValue * SystemAPI.Time.DeltaTime);
                 
-                float reachedTargetDistance = .5f;
-                if (math.distance(transform.ValueRO.Position, target.ValueRW.targetPosition) < reachedTargetDistance)
-                {
-                    target.ValueRW.targetPosition = GetRandomPosition();
-                }
+                // float reachedTargetDistance = .5f;
+                // if (math.distance(transform.ValueRO.Position, target.ValueRW.targetPosition) < reachedTargetDistance)
+                // {
+                //     target.ValueRW.targetPosition = GetRandomPosition();
+                // }
+                moveToPositionAspect.Move(SystemAPI.Time.DeltaTime, new Random(1));
             }
         }
 
