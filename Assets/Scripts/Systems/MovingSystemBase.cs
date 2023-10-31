@@ -40,6 +40,8 @@ namespace ECSProgramming
             //         target.ValueRW.targetPosition = GetRandomPosition();
             //     }
             // }
+
+            RefRW<RandomComponent> random = SystemAPI.GetSingletonRW<RandomComponent>();
             
             //! This also does work but it will not work with ISystemBase
             foreach (MoveToPositionAspect moveToPositionAspect in SystemAPI.Query<MoveToPositionAspect>())
@@ -51,7 +53,7 @@ namespace ECSProgramming
                 // {
                 //     target.ValueRW.targetPosition = GetRandomPosition();
                 // }
-                moveToPositionAspect.Move(SystemAPI.Time.DeltaTime, new Random(1));
+                moveToPositionAspect.Move(SystemAPI.Time.DeltaTime, random);
             }
         }
 

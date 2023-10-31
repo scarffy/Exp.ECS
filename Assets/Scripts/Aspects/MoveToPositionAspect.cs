@@ -22,7 +22,7 @@ namespace ECSProgramming
         private readonly RefRO<Speed> speed;
         private readonly RefRW<TargetPosition> targetPosition;
 
-        public void Move(float deltaTime, Random random)
+        public void Move(float deltaTime, RefRW<RandomComponent> randomComponent)
         {
             float3 direction = math.normalize(targetPosition.ValueRW.targetPosition - transformAspect.ValueRO.Position);
             transformAspect.ValueRW.Position += direction * speed.ValueRO.speedValue * deltaTime;
@@ -31,16 +31,16 @@ namespace ECSProgramming
             if (math.distance(transformAspect.ValueRO.Position, targetPosition.ValueRW.targetPosition) <
                 reachedTargetPosition)
             {
-                targetPosition.ValueRW.targetPosition = GetRandomPosition(random);
+                targetPosition.ValueRW.targetPosition = GetRandomPosition(randomComponent);
             }
         }
 
-        private float3 GetRandomPosition(Random random)
+        private float3 GetRandomPosition( RefRW<RandomComponent> randomComponent)
         {
             return new float3(
-                random.NextFloat(0f,15f), 
+                randomComponent.ValueRW.randomValue.NextFloat(0f,15f), 
                 0,
-                random.NextFloat(0f,15f)
+                randomComponent.ValueRW.randomValue.NextFloat(0f,15f)
             );
         }
     }
