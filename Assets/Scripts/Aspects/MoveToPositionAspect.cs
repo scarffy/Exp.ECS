@@ -21,21 +21,39 @@ namespace ECSProgramming
         private readonly RefRW<LocalTransform> transformAspect;
         private readonly RefRO<Speed> speed;
         private readonly RefRW<TargetPosition> targetPosition;
+        private readonly RefRW<Health> health;
+        private readonly RefRO<AttackRange> attackRange;
 
         public void Move(float deltaTime, RefRW<RandomComponent> randomComponent)
         {
-            float3 direction = math.normalize(targetPosition.ValueRW.targetPosition - transformAspect.ValueRO.Position);
-            transformAspect.ValueRW.Position += direction * speed.ValueRO.speedValue * deltaTime;
-
-            float reachedTargetPosition = .5f;
-            if (math.distance(transformAspect.ValueRO.Position, targetPosition.ValueRW.targetPosition) <
-                reachedTargetPosition)
+            if (health.ValueRW.healthValue > 1)
             {
-                targetPosition.ValueRW.targetPosition = GetRandomPosition(randomComponent);
+                float3 direction =
+                    math.normalize(targetPosition.ValueRW.targetPosition - transformAspect.ValueRO.Position);
+                transformAspect.ValueRW.Position += direction * speed.ValueRO.speedValue * deltaTime;
+
+                if (math.distance(transformAspect.ValueRO.Position, targetPosition.ValueRW.targetPosition) <
+                    attackRange.ValueRO.attackRangeValue)
+                {
+                    // targetPosition.ValueRW.targetPosition = GetRandomPosition(randomComponent);
+
+                    //! Subtract Health each time unit reach the target position
+                    SubtractHealth(1, randomComponent);
+                }
             }
         }
 
-        private float3 GetRandomPosition( RefRW<RandomComponent> randomComponent)
+        private void SubtractHealth(int value)
+        {
+            health.ValueRW.healthValue -= value;
+        }
+        
+        private void SubtractHealth(int value, RefRW<RandomComponent> randomComponent)
+        {
+            health.ValueRW.healthValue -= value;
+            targetPosition.ValueRW.targetPosition = GetRandomPosition(randomComponent);
+        }
+        private float3 GetRandomPosition(RefRW<RandomComponent> randomComponent)
         {
             return new float3(
                 randomComponent.ValueRW.randomValue.NextFloat(0f,15f), 
