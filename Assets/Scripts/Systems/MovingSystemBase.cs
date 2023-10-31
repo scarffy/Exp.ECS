@@ -14,9 +14,13 @@ namespace ECSProgramming
     {
         protected override void OnUpdate()
         {
-            Entities.ForEach ((ref LocalTransform aspect, in Speed speed) =>
-            {
-                aspect.Position += new float3(SystemAPI.Time.DeltaTime * speed.speedValue, 0, 0);
+            // Entities.ForEach ((ref LocalTransform aspect, in Speed speed, in TargetPosition targetPos) =>
+            // {
+                Entities.ForEach ((ref LocalTransform aspect, in Speed speed) =>
+                {
+                // float3 direction = math.normalize(targetPos.targetPosition - aspect.Position);
+                // aspect.Position += new float3(SystemAPI.Time.DeltaTime * speed.speedValue * direction);
+                aspect.Position += new float3(SystemAPI.Time.DeltaTime * speed.speedValue,0,0);
             }).Run();
                 
             //! If we use Schedule. It will run on main thread
