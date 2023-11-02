@@ -17,16 +17,18 @@ namespace ECSProgramming
         private readonly Entity entity;
         
         //! Can be regular component or other aspect
+        
         //! We want to write new value to local transform
         private readonly RefRW<LocalTransform> transformAspect;
         private readonly RefRO<Speed> speed;
         private readonly RefRW<TargetPosition> targetPosition;
         private readonly RefRW<Health> health;
         private readonly RefRO<AttackRange> attackRange;
+        private readonly RefRW<Team> team;
 
         public void Move(float deltaTime, RefRW<RandomComponent> randomComponent)
         {
-            if (health.ValueRW.healthValue > 1)
+            if (health.ValueRW.healthValue > 0)
             {
                 float3 direction =
                     math.normalize(targetPosition.ValueRW.targetPosition - transformAspect.ValueRO.Position);
@@ -40,6 +42,10 @@ namespace ECSProgramming
                     //! Subtract Health each time unit reach the target position
                     SubtractHealth(1, randomComponent);
                 }
+            }
+            else
+            {
+                //! Destroy or hide Entity
             }
         }
 

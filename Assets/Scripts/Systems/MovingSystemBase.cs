@@ -2,19 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.Transforms;
 using UnityEngine;
 using Random = Unity.Mathematics.Random;
 
 namespace ECSProgramming
 {
     /// <summary>
-    /// System base should be use for simple job
+    /// System base should be use for simple job or non performance worry
     /// </summary>
     public partial class MovingSystemBase : SystemBase
     {
+        protected override void OnCreate()
+        {
+            int total = EntityManager.EntityCapacity;
+            Debug.Log($"Total entities {total}");
+        }
+        
         protected override void OnUpdate()
         {
+            #region To Clean
             //! This does work
             // Entities.ForEach ((ref LocalTransform aspect, in Speed speed, in TargetPosition targetPos) =>
             // {
@@ -40,12 +46,26 @@ namespace ECSProgramming
             //         target.ValueRW.targetPosition = GetRandomPosition();
             //     }
             // }
+            #endregion
 
+            //! How to use this Entity?
+            //! What does it do?
+            Entity playerEntityQuery = EntityManager.CreateEntity(typeof(Team));
+            
+            //! Need to assign the team value. How do I assign this at the start of the game?
+            Entities.ForEach((ref Team team) =>
+            {
+                if (team.teamValue == 0)
+                    team.teamValue = 1;
+            }).Run();
+            
+            //! Assign random value
             RefRW<RandomComponent> random = SystemAPI.GetSingletonRW<RandomComponent>();
             
             //! This also does work but it will not work with ISystemBase
             foreach (MoveToPositionAspect moveToPositionAspect in SystemAPI.Query<MoveToPositionAspect>())
             {
+                #region To Clean
                 // transform.ValueRW = transform.ValueRO.Translate(GetRandomPosition() * speed.ValueRO.speedValue * SystemAPI.Time.DeltaTime);
                 
                 // float reachedTargetDistance = .5f;
@@ -53,10 +73,13 @@ namespace ECSProgramming
                 // {
                 //     target.ValueRW.targetPosition = GetRandomPosition();
                 // }
+                #endregion
+                
                 moveToPositionAspect.Move(SystemAPI.Time.DeltaTime, random);
             }
         }
 
+        #region To Clean
         private float3 GetRandomPosition()
         {
            Random random = new Random(1);
@@ -67,5 +90,6 @@ namespace ECSProgramming
                 random.NextFloat(0f,15f)
             );
         }
+        #endregion
     }
 }
